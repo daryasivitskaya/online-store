@@ -1,7 +1,6 @@
 const sequelize = require('../db');
 const {DataTypes} = require('sequelize');
 
-
 const User = sequelize.define('user',{
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     email: {type: DataTypes.STRING, unique: true},
@@ -63,6 +62,9 @@ BasketDevice.belongsTo(Basket);
 Type.hasMany(BasketDevice);
 BasketDevice.belongsTo(Type);
 
+Type.hasMany(Device);
+Device.belongsTo(Type);
+
 Brand.hasMany(Device);
 Device.belongsTo(Brand);
 
@@ -72,13 +74,13 @@ Rating.belongsTo(Device)
 Device.hasMany(BasketDevice)
 BasketDevice.belongsTo(Device)
 
-Device.hasMany(DeviceInfo)
+Device.hasMany(DeviceInfo, {as: 'info'})
 DeviceInfo.belongsTo(Device)
 
 Type.belongsToMany(Brand, {through: TypeBrand})
 Brand.belongsToMany(Type, {through: TypeBrand})
 
-module.export = {
+module.exports = {
     User,
     Basket,
     BasketDevice,
