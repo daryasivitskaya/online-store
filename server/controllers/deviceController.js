@@ -6,22 +6,25 @@ const path = require('path')
 class DeviceController {
     async create(req, res, next){
         try{
-            const {name, price, brandId, typeId, info} = req.body;
-            const {img} = req.files
+            const {name, price, brandId, typeId} = req.body;
+            let info = req.body.info;
+            let {img} = req.files
             let fileName = uuid.v4() + ".jpg"
             img.mv(path.resolve(__dirname, '..', 'static', fileName));
             const device = await Device.create({name, price, brandId, typeId, img: fileName});
 
-            if(unfo){
-                info = JSON.parse(info)
-                info.forEach(i => 
+            if (info) {
+                info = JSON.parse(info);
+                info.forEach(i =>
                     DeviceInfo.create({
-                    title: i.title,
-                    description: i.description,
-                    deviceId: device.id
-                })
-            )
+                        title: i.title,
+                        description: i.description,
+                        deviceId: device.id
+                    })
+                );
             }
+            
+            
             return res.json(device);
         }catch(e){
             next(ApiError.badRequest(e.message));
